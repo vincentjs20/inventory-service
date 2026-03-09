@@ -1,6 +1,5 @@
-package com.project.inventory.dto;
+package com.project.inventory.dto.request;
 
-import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +13,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class OrderDTO {
+public class ItemRequest {
 
-    private Item item;
-
-    private Integer qty;
+    private String name;
 
     private BigDecimal price;
 

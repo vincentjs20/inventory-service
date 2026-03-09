@@ -1,11 +1,11 @@
-package com.project.inventory.dto.response;
+package com.project.inventory.dto.request;
 
 import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
@@ -13,16 +13,11 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class OrderResponse {
+@SuperBuilder
+public class OrderRequest {
 
-    private String orderNo;
-
-    private Item item;
+    private Long itemId;
 
     private Integer qty;
-
-    private BigDecimal price;
-
 
 }

@@ -1,28 +1,20 @@
 package com.project.inventory.dto.response;
 
-import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderResponse {
+public class ErrorResponse {
 
-    private String orderNo;
+    private int statusCode;
 
-    private Item item;
-
-    private Integer qty;
-
-    private BigDecimal price;
-
+    private String message;
 
 }

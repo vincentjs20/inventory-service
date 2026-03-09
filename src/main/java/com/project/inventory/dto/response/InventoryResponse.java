@@ -1,19 +1,25 @@
 package com.project.inventory.dto.response;
 
-import com.project.inventory.dto.InventoryDTO;
+import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class InventoryResponse extends InventoryDTO {
+@Builder
+public class InventoryResponse {
 
     private Long id;
+
+    private Item item;
+
+    private Integer qty;
+
+    private String type;
 
 }

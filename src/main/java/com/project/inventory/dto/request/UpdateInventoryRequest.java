@@ -1,6 +1,5 @@
-package com.project.inventory.dto;
+package com.project.inventory.dto.request;
 
-import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class InventoryDTO {
-
-    private Item item;
+public class UpdateInventoryRequest {
 
     private Integer qty;
 

@@ -32,6 +32,10 @@ public class Order {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne
+    @JoinColumn(name = "inventory_id")
+    private Inventory inventory;
+
     private Integer qty;
 
     private BigDecimal price;

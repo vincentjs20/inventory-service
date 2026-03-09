@@ -1,6 +1,7 @@
 package com.project.inventory.service;
 
-import com.project.inventory.dto.InventoryDTO;
+import com.project.inventory.dto.request.InventoryRequest;
+import com.project.inventory.dto.request.UpdateInventoryRequest;
 import com.project.inventory.dto.response.InventoryResponse;
 import com.project.inventory.model.Inventory;
 import org.springframework.data.domain.Page;
@@ -8,14 +9,14 @@ import org.springframework.data.domain.Pageable;
 
 public interface InventoryService {
 
-    public InventoryResponse get(Long id);
+    InventoryResponse get(Long id);
 
-    public Page<Inventory> list(Pageable pageable);
+    Page<Inventory> list(Pageable pageable);
 
-    public InventoryResponse save(InventoryDTO inventory);
+    InventoryResponse save(InventoryRequest inventory);
 
-    public InventoryResponse update(Long id, InventoryDTO inventory);
+    InventoryResponse update(Long id, UpdateInventoryRequest inventoryRequest);
 
-    public void delete(Long id);
+    String delete(Long id);
 
 }

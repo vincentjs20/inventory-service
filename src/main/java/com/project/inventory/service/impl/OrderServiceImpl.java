@@ -1,9 +1,13 @@
 package com.project.inventory.service.impl;
 
-import com.project.inventory.dto.OrderDTO;
+import com.project.inventory.dto.request.OrderRequest;
 import com.project.inventory.dto.request.UpdateOrderRequest;
 import com.project.inventory.dto.response.OrderResponse;
+import com.project.inventory.model.Inventory;
+import com.project.inventory.model.Item;
 import com.project.inventory.model.Order;
+import com.project.inventory.repository.InventoryRepository;
+import com.project.inventory.repository.ItemRepository;
 import com.project.inventory.repository.OrderRepository;
 import com.project.inventory.service.ItemService;
 import com.project.inventory.service.OrderService;
@@ -17,6 +21,11 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository ordersRepository;
+
+    private final ItemRepository itemRepository;
+
+    private final InventoryRepository inventoryRepository;
+
     private final ItemService itemService;
 
     @Override
@@ -37,19 +46,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse save(OrderDTO order) {
+    public OrderResponse save(OrderRequest order) {
+        Item existingItem = itemRepository.findById(order.getItemId()).orElseThrow(()-> new RuntimeException("Item not found"));
 
-        Integer stock = itemService.getRemainingStock(order.getItem().getId());
+        Integer stock = itemService.getRemainingStock(order.getItemId());
 
         if (stock < order.getQty()) {
             throw new RuntimeException("Insufficient stock");
         }
 
+        Long count = ordersRepository.countOrders();
+
+        String orderNo = "O" + (count + 1);
+
         Order newOrder = Order.builder()
-                .item(order.getItem())
+                .orderNo(orderNo)
+                .item(itemRepository.findById(order.getItemId()).orElseThrow(()-> new RuntimeException("Item not found")))
                 .qty(order.getQty())
-                .price(order.getPrice())
+                .price(existingItem.getPrice())
                 .build();
+
+        Inventory newInventory = Inventory.builder()
+                .item(existingItem)
+                .qty(order.getQty())
+                .type("W")
+                .build();
+
+        inventoryRepository.save(newInventory);
+
+        newOrder.setInventory(newInventory);
 
         ordersRepository.save(newOrder);
 
@@ -64,24 +89,41 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse update(String orderNo, UpdateOrderRequest updateOrderRequest) {
 
-        Order existing = ordersRepository.findById(orderNo).orElseThrow(() -> new RuntimeException("Order not found"));
+        Order existingOrder = ordersRepository.findById(orderNo).orElseThrow(() -> new RuntimeException("Order not found"));
 
-        existing.setQty(updateOrderRequest.getQty());
-        existing.setPrice(updateOrderRequest.getPrice());
+        Integer currentStock = itemService.getRemainingStock(existingOrder.getItem().getId()) + existingOrder.getInventory().getQty();
 
-        ordersRepository.save(existing);
+        if (currentStock - updateOrderRequest.getQty() < 0) {
+            throw new RuntimeException("Insufficient stock");
+        }
+
+        existingOrder.setQty(updateOrderRequest.getQty());
+
+        ordersRepository.save(existingOrder);
+
+        existingOrder.getInventory().setQty(updateOrderRequest.getQty());
+
+        inventoryRepository.save(existingOrder.getInventory());
 
         return OrderResponse.builder()
-                .orderNo(existing.getOrderNo())
-                .item(existing.getItem())
-                .qty(existing.getQty())
-                .price(existing.getPrice())
+                .orderNo(existingOrder.getOrderNo())
+                .item(existingOrder.getItem())
+                .qty(existingOrder.getQty())
+                .price(existingOrder.getPrice())
                 .build();
     }
 
     @Override
-    public void delete(String orderNo) {
+    public String delete(String orderNo) {
+
+        Order currentOrder = ordersRepository.findById(orderNo).orElseThrow(() -> new RuntimeException("Order not found"));
+        Inventory inventory = currentOrder.getInventory();
+
         ordersRepository.deleteById(orderNo);
+
+        inventoryRepository.deleteById(inventory.getId());
+
+        return String.format("Item with id : %s deleted successfully", orderNo);
     }
 
 }

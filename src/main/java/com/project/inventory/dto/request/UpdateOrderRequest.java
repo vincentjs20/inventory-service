@@ -1,13 +1,11 @@
 package com.project.inventory.dto.request;
 
-import com.project.inventory.model.Item;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -17,7 +15,5 @@ import java.math.BigDecimal;
 public class UpdateOrderRequest {
 
     private Integer qty;
-
-    private BigDecimal price;
 
 }

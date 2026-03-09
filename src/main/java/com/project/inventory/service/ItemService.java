@@ -1,6 +1,6 @@
 package com.project.inventory.service;
 
-import com.project.inventory.dto.ItemDTO;
+import com.project.inventory.dto.request.ItemRequest;
 import com.project.inventory.dto.response.ItemResponse;
 import com.project.inventory.model.Item;
 import org.springframework.data.domain.Page;
@@ -12,11 +12,11 @@ public interface ItemService {
 
     Page<Item> list(Pageable pageable);
 
-    ItemResponse save(ItemDTO item);
+    ItemResponse save(ItemRequest item);
 
-    ItemResponse update(Long id, ItemDTO item);
+    ItemResponse update(Long id, ItemRequest item);
 
-    void delete(Long id);
+    String delete(Long id);
 
     Integer getRemainingStock(Long itemId);
 

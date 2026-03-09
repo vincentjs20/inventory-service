@@ -1,6 +1,6 @@
 package com.project.inventory.service.impl;
 
-import com.project.inventory.dto.ItemDTO;
+import com.project.inventory.dto.request.ItemRequest;
 import com.project.inventory.dto.response.ItemResponse;
 import com.project.inventory.model.Item;
 import com.project.inventory.repository.InventoryRepository;
@@ -26,6 +26,7 @@ public class ItemServiceImpl implements ItemService {
                 .id(item.getId())
                 .name(item.getName())
                 .price(item.getPrice())
+                .stock(getRemainingStock(id))
                 .build();
     }
 
@@ -35,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemResponse save(ItemDTO item) {
+    public ItemResponse save(ItemRequest item) {
         Item newItem = Item.builder()
                 .name(item.getName())
                 .price(item.getPrice())
@@ -49,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemResponse update(Long id, ItemDTO item) {
+    public ItemResponse update(Long id, ItemRequest item) {
         Item existing = itemRepository.findById(id).orElseThrow(()-> new RuntimeException("Item not found"));
 
         existing.setName(item.getName());
@@ -65,8 +66,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void delete(Long id) {
+    public String delete(Long id) {
+        itemRepository.findById(id).orElseThrow(()-> new RuntimeException("Item not found"));
         itemRepository.deleteById(id);
+        return String.format("Item with id : %d deleted successfully", id);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.project.inventory.service;
 
-import com.project.inventory.dto.OrderDTO;
+import com.project.inventory.dto.request.OrderRequest;
 import com.project.inventory.dto.request.UpdateOrderRequest;
 import com.project.inventory.dto.response.OrderResponse;
 import com.project.inventory.model.Order;
@@ -13,9 +13,9 @@ public interface OrderService {
 
     Page<Order> list(Pageable pageable);
 
-    OrderResponse save(OrderDTO order);
+    OrderResponse save(OrderRequest order);
 
     OrderResponse update(String orderNo, UpdateOrderRequest updateOrderRequest);
 
-    void delete(String orderNo);
+    String delete(String orderNo);
 }

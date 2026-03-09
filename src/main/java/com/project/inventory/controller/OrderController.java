@@ -1,7 +1,8 @@
 package com.project.inventory.controller;
 
-import com.project.inventory.dto.OrderDTO;
+import com.project.inventory.dto.request.OrderRequest;
 import com.project.inventory.dto.request.UpdateOrderRequest;
+import com.project.inventory.dto.response.OrderResponse;
 import com.project.inventory.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -24,29 +27,62 @@ public class OrderController {
 
     @GetMapping("/{orderNo}")
     public ResponseEntity<?> get(@PathVariable String orderNo) {
-        return ResponseEntity.ok(orderService.get(orderNo));
+        try {
+            OrderResponse order = orderService.get(orderNo);
+            return ResponseEntity.ok(order);
+        }
+        catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @GetMapping
     public ResponseEntity<?> list(Pageable pageable) {
-        return ResponseEntity.ok(orderService.list(pageable));
+        try {
+            return ResponseEntity.ok(orderService.list(pageable));
+        }
+        catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody OrderDTO orderDTO) {
-        return ResponseEntity.ok(orderService.save(orderDTO));
+    public ResponseEntity<?> save(@RequestBody OrderRequest orderRequest) {
+        try {
+            OrderResponse savedOrder = orderService.save(orderRequest);
+            return ResponseEntity.ok(savedOrder);
+        }
+        catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @PutMapping("/{orderNo}")
     public ResponseEntity<?> update(@PathVariable String orderNo,
                                     @RequestBody UpdateOrderRequest request) {
-        return ResponseEntity.ok(orderService.update(orderNo, request));
+        try {
+            OrderResponse updatedOrder = orderService.update(orderNo, request);
+            return ResponseEntity.ok(updatedOrder);
+        }
+        catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @DeleteMapping("/{orderNo}")
     public ResponseEntity<?> delete(@PathVariable String orderNo) {
-        orderService.delete(orderNo);
-        return ResponseEntity.ok("Order deleted successfully");
+        try {
+            String message = orderService.delete(orderNo);
+            return ResponseEntity.ok(message);
+        }
+        catch (RuntimeException ex) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", ex.getMessage()));
+        }
     }
 
 }
