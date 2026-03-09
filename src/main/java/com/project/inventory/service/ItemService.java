@@ -1,18 +1,20 @@
 package com.project.inventory.service;
 
+import com.project.inventory.dto.ItemDTO;
+import com.project.inventory.dto.response.ItemResponse;
 import com.project.inventory.model.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemService {
 
-    Item get(Long id);
+    ItemResponse get(Long id);
 
     Page<Item> list(Pageable pageable);
 
-    Item save(Item item);
+    ItemResponse save(ItemDTO item);
 
-    Item update(Long id, Item item);
+    ItemResponse update(Long id, ItemDTO item);
 
     void delete(Long id);
 

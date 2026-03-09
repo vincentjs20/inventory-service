@@ -1,10 +1,13 @@
 package com.project.inventory.controller;
 
+import com.project.inventory.dto.ItemDTO;
+import com.project.inventory.dto.response.ItemResponse;
 import com.project.inventory.model.Item;
 import com.project.inventory.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,23 +25,23 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public Item get(@PathVariable Long id) {
-        return itemService.get(id);
+    public ResponseEntity<ItemResponse> get(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.get(id));
     }
 
     @GetMapping
-    public Page<Item> list(Pageable pageable) {
-        return itemService.list(pageable);
+    public ResponseEntity<Page<Item>> list(Pageable pageable) {
+        return ResponseEntity.ok(itemService.list(pageable));
     }
 
     @PostMapping
-    public Item save(@RequestBody Item item) {
-        return itemService.save(item);
+    public ResponseEntity<ItemResponse> save(@RequestBody ItemDTO item) {
+        return ResponseEntity.ok(itemService.save(item));
     }
 
     @PutMapping("/{id}")
-    public Item update(@PathVariable Long id, @RequestBody Item item) {
-        return itemService.update(id, item);
+    public ResponseEntity<ItemResponse> update(@PathVariable Long id, @RequestBody ItemDTO item) {
+        return ResponseEntity.ok(itemService.update(id, item));
     }
 
     @DeleteMapping("/{id}")

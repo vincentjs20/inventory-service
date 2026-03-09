@@ -1,5 +1,7 @@
 package com.project.inventory.service.impl;
 
+import com.project.inventory.dto.ItemDTO;
+import com.project.inventory.dto.response.ItemResponse;
 import com.project.inventory.model.Item;
 import com.project.inventory.repository.InventoryRepository;
 import com.project.inventory.repository.ItemRepository;
@@ -18,9 +20,13 @@ public class ItemServiceImpl implements ItemService {
     private final InventoryRepository inventoryRepository;
 
     @Override
-    public Item get(Long id) {
-        return itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+    public ItemResponse get(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(()-> new RuntimeException("Item not found"));
+        return ItemResponse.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .price(item.getPrice())
+                .build();
     }
 
     @Override
@@ -29,18 +35,33 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item save(Item item) {
-        return itemRepository.save(item);
+    public ItemResponse save(ItemDTO item) {
+        Item newItem = Item.builder()
+                .name(item.getName())
+                .price(item.getPrice())
+                .build();
+        itemRepository.save(newItem);
+        return ItemResponse.builder()
+                .id(newItem.getId())
+                .name(newItem.getName())
+                .price(newItem.getPrice())
+                .build();
     }
 
     @Override
-    public Item update(Long id, Item item) {
-        Item existing = get(id);
+    public ItemResponse update(Long id, ItemDTO item) {
+        Item existing = itemRepository.findById(id).orElseThrow(()-> new RuntimeException("Item not found"));
 
         existing.setName(item.getName());
         existing.setPrice(item.getPrice());
 
-        return itemRepository.save(existing);
+        itemRepository.save(existing);
+
+        return ItemResponse.builder()
+                .id(existing.getId())
+                .name(existing.getName())
+                .price(existing.getPrice())
+                .build();
     }
 
     @Override
